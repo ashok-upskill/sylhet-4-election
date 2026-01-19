@@ -13,7 +13,7 @@ export type ProblemStatus =
   | 'in_progress' 
   | 'resolved' 
   | 'rejected';
-  
+
 // Category Types
 export type ProblemCategory =
   | "road"
@@ -38,24 +38,44 @@ export const STATUS_CONFIG: Record<
   }
 > = {
   pending: {
-    labelBn: "অপেক্ষায়",
-    bgColor: "bg-amber-500",
-    textColor: "text-amber-700",
+    labelBn: 'অপেক্ষায়',
+    bgColor: 'bg-yellow-100',
+    textColor: 'text-yellow-800',
   },
   seen: {
-    labelBn: "দেখা হয়েছে",
-    bgColor: "bg-blue-500",
-    textColor: "text-blue-700",
+    labelBn: 'দেখা হয়েছে',
+    bgColor: 'bg-blue-100',
+    textColor: 'text-blue-800',
   },
   promised: {
-    labelBn: "প্রতিশ্রুতি",
-    bgColor: "bg-purple-500",
-    textColor: "text-purple-700",
+    labelBn: 'প্রতিশ্রুতি',
+    bgColor: 'bg-purple-100',
+    textColor: 'text-purple-800',
   },
   solved: {
-    labelBn: "সমাধান",
-    bgColor: "bg-green-500",
-    textColor: "text-green-700",
+    labelBn: 'সমাধান',
+    bgColor: 'bg-green-100',
+    textColor: 'text-green-800',
+  },
+  approved: {
+    labelBn: 'অনুমোদিত',
+    bgColor: 'bg-blue-100',
+    textColor: 'text-blue-800',
+  },
+  in_progress: {
+    labelBn: 'চলমান',
+    bgColor: 'bg-purple-100',
+    textColor: 'text-purple-800',
+  },
+  resolved: {
+    labelBn: 'সমাধান হয়েছে',
+    bgColor: 'bg-green-100',
+    textColor: 'text-green-800',
+  },
+  rejected: {
+    labelBn: 'প্রত্যাখ্যাত',
+    bgColor: 'bg-red-100',
+    textColor: 'text-red-800',
   },
 };
 
