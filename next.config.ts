@@ -5,9 +5,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'pyyunvvonfrbpprziuvq.supabase.co', // আপনার সুপাবেস প্রজেক্টের হোস্টনেম
+        hostname: 'pyyunvvonfrbpprziuvq.supabase.co',
         port: '',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
       },
     ],
   },
