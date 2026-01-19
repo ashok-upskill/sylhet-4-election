@@ -3,8 +3,17 @@
    ================================================ */
 
 // Status Types
-export type ProblemStatus = "pending" | "seen" | "promised" | "solved";
-
+// সব সম্ভাব্য status values
+export type ProblemStatus = 
+  | 'pending' 
+  | 'seen' 
+  | 'promised' 
+  | 'solved'
+  | 'approved' 
+  | 'in_progress' 
+  | 'resolved' 
+  | 'rejected';
+  
 // Category Types
 export type ProblemCategory =
   | "road"
