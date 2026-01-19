@@ -1,47 +1,57 @@
-import { cn } from "@/lib/utils";
+// components/ui/badge.tsx
+import { cn } from '@/lib/utils';
+
+export type ProblemStatus = 'all' | 'pending' | 'approved' | 'in_progress' | 'resolved' | 'rejected';
 
 export interface BadgeProps {
-  variant?: "default" | "pending" | "seen" | "promised" | "solved" | "category";
-  size?: "sm" | "md";
-  pulse?: boolean;
   children: React.ReactNode;
+  variant?: ProblemStatus | 'default' | 'success' | 'warning' | 'error' | 'info';
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
+  onClick?: () => void;
 }
 
+const variantStyles: Record<string, string> = {
+  default: 'bg-gray-100 text-gray-800 border-gray-200',
+  all: 'bg-gray-100 text-gray-800 border-gray-200',
+  pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  approved: 'bg-blue-100 text-blue-800 border-blue-200',
+  in_progress: 'bg-purple-100 text-purple-800 border-purple-200',
+  resolved: 'bg-green-100 text-green-800 border-green-200',
+  rejected: 'bg-red-100 text-red-800 border-red-200',
+  success: 'bg-green-100 text-green-800 border-green-200',
+  warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  error: 'bg-red-100 text-red-800 border-red-200',
+  info: 'bg-blue-100 text-blue-800 border-blue-200',
+};
+
+const sizeStyles: Record<string, string> = {
+  sm: 'px-2 py-0.5 text-xs',
+  md: 'px-2.5 py-1 text-sm',
+  lg: 'px-3 py-1.5 text-base',
+};
+
 export function Badge({
-  variant = "default",
-  size = "md",
-  pulse = false,
   children,
+  variant = 'default',
+  size = 'md',
   className,
+  onClick,
 }: BadgeProps) {
-  const variants = {
-    default: "bg-gray-100 text-gray-700",
-    pending: "status-pending text-white",
-    seen: "status-seen text-white",
-    promised: "status-promised text-white",
-    solved: "status-solved text-white",
-    category: "bg-white/90 backdrop-blur text-gray-700 shadow-sm",
-  };
-
-  const sizes = {
-    sm: "px-2 py-0.5 text-xs",
-    md: "px-2.5 py-1 text-xs",
-  };
-
+  const Component = onClick ? 'button' : 'span';
+  
   return (
-    <span
+    <Component
+      onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1.5 font-medium rounded-full",
-        variants[variant],
-        sizes[size],
+        'inline-flex items-center font-medium rounded-full border transition-colors',
+        variantStyles[variant] || variantStyles.default,
+        sizeStyles[size],
+        onClick && 'cursor-pointer hover:opacity-80',
         className
       )}
     >
-      {pulse && (
-        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-      )}
       {children}
-    </span>
+    </Component>
   );
 }
