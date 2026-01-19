@@ -16,7 +16,8 @@ export type BadgeVariant =
   | 'success' 
   | 'warning' 
   | 'error' 
-  | 'info';
+  | 'info'
+  | 'destructive';  // এটা যোগ করলাম
 
 export interface BadgeProps {
   children: React.ReactNode;
@@ -37,6 +38,7 @@ const variantStyles: Record<string, string> = {
   in_progress: 'bg-purple-100 text-purple-800 border-purple-200',
   resolved: 'bg-green-100 text-green-800 border-green-200',
   rejected: 'bg-red-100 text-red-800 border-red-200',
+  destructive: 'bg-red-100 text-red-800 border-red-200',  // এটা যোগ করলাম
   success: 'bg-green-100 text-green-800 border-green-200',
   warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
   error: 'bg-red-100 text-red-800 border-red-200',
