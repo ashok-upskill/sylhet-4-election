@@ -1,10 +1,42 @@
+'use client';
+
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Mountain, Trees, Landmark, ArrowRight, ChevronRight } from "lucide-react";
 import { toBanglaNumber } from "@/lib/utils";
+import { getUpazilaStats, type UpazilaStats } from "@/lib/api";
+
+interface UpazilaConfig {
+  slug: string;
+  icon: ReactNode;
+  gradient: string;
+  famousPlace: string;
+}
+
+const upazilaConfigs: Record<string, UpazilaConfig> = {
+  "কোম্পানীগঞ্জ": {
+    slug: "companyganj",
+    icon: <Mountain className="w-6 h-6" />,
+    gradient: "bg-gradient-to-br from-primary to-primary-600",
+    famousPlace: "ভোলাগঞ্জ পাথর কোয়ারি",
+  },
+  "গোয়াইনঘাট": {
+    slug: "gowainghat",
+    icon: <Trees className="w-6 h-6" />,
+    gradient: "bg-gradient-to-br from-accent to-accent-600",
+    famousPlace: "জাফলং, রাতারগুল",
+  },
+  "জৈন্তাপুর": {
+    slug: "jaintapur",
+    icon: <Landmark className="w-6 h-6" />,
+    gradient: "bg-gradient-to-br from-amber-500 to-orange-600",
+    famousPlace: "লালাখাল",
+  },
+};
 
 interface UpazilaCardProps {
   name: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   gradient: string;
   unions: number;
   problems: number;
@@ -23,11 +55,13 @@ function UpazilaCard({
   famousPlace,
   href,
 }: UpazilaCardProps) {
+  const cardClassName =
+    "group relative " +
+    gradient +
+    " rounded-2xl p-6 text-white cursor-pointer card-hover overflow-hidden block";
+
   return (
-    <Link
-      href={href}
-      className={`group relative ${gradient} rounded-2xl p-6 text-white cursor-pointer card-hover overflow-hidden block`}
-    >
+    <Link href={href} className={cardClassName}>
       {/* Decorative Circles */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -67,10 +101,46 @@ function UpazilaCard({
   );
 }
 
-export function UpazilaCards() {
+function UpazilaCardSkeleton() {
   return (
-    <section className="py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-gray-200 animate-pulse rounded-2xl p-6 h-[180px]">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 bg-gray-300 rounded-xl" />
+        <div>
+          <div className="h-5 w-24 bg-gray-300 rounded mb-1" />
+          <div className="h-3 w-16 bg-gray-300 rounded" />
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        <div className="bg-gray-300 rounded-lg h-12" />
+        <div className="bg-gray-300 rounded-lg h-12" />
+        <div className="bg-gray-300 rounded-lg h-12" />
+      </div>
+    </div>
+  );
+}
+
+export function UpazilaCards() {
+  const [stats, setStats] = useState<UpazilaStats[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const data = await getUpazilaStats();
+        setStats(data);
+      } catch (error) {
+        console.error("Error loading upazila stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchStats();
+  }, []);
+
+  return (
+    <section className="py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-800">
             <span className="gradient-text">উপজেলা</span> নির্বাচন করুন
@@ -84,40 +154,36 @@ export function UpazilaCards() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <UpazilaCard
-            name="কোম্পানীগঞ্জ"
-            icon={<Mountain className="w-6 h-6" />}
-            gradient="bg-gradient-to-br from-primary to-primary-600"
-            unions={7}
-            problems={85}
-            solved={32}
-            famousPlace="ভোলাগঞ্জ পাথর কোয়ারি"
-            href="/problems?upazila=companyganj"
-          />
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <UpazilaCardSkeleton />
+            <UpazilaCardSkeleton />
+            <UpazilaCardSkeleton />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {stats.map((upazila) => {
+              const config = upazilaConfigs[upazila.name];
+              if (!config) return null;
 
-          <UpazilaCard
-            name="গোয়াইনঘাট"
-            icon={<Trees className="w-6 h-6" />}
-            gradient="bg-gradient-to-br from-accent to-accent-600"
-            unions={11}
-            problems={112}
-            solved={41}
-            famousPlace="জাফলং, রাতারগুল"
-            href="/problems?upazila=gowainghat"
-          />
-
-          <UpazilaCard
-            name="জৈন্তাপুর"
-            icon={<Landmark className="w-6 h-6" />}
-            gradient="bg-gradient-to-br from-amber-500 to-orange-600"
-            unions={6}
-            problems={50}
-            solved={16}
-            famousPlace="লালাখাল"
-            href="/problems?upazila=jaintapur"
-          />
-        </div>
+              return (
+                <UpazilaCard
+                  key={upazila.name}
+                  name={upazila.name}
+                  icon={config.icon}
+                  gradient={config.gradient}
+                  unions={upazila.unions_count}
+                  problems={upazila.problems_count}
+                  solved={upazila.solved_count}
+                  famousPlace={config.famousPlace}
+                  // চাইলে এখানে name এর বদলে slug ব্যবহার করতে পারো:
+                  // href={`/problems?upazila=${config.slug}`}
+                  href={`/problems?upazila=${encodeURIComponent(upazila.name)}`}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

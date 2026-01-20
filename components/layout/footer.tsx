@@ -42,7 +42,7 @@ export function Footer() {
       </div>
 
       {/* Main Footer Content */}
-      <div className="relative container mx-auto px-4 pt-16 pb-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
           
           {/* Brand & Candidate Profile (Col-span-5) */}
@@ -225,7 +225,7 @@ export function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-800 bg-gray-950/50">
-        <div className="container mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
             <p>
               © {currentYear} <span className="text-gray-300 font-medium">{siteInfo?.site_name}</span>. সর্বস্বত্ব সংরক্ষিত।
@@ -234,7 +234,7 @@ export function Footer() {
               <Link href="#" className="hover:text-green-400 transition-colors">গোপনীয়তা নীতি</Link>
               <Link href="#" className="hover:text-green-400 transition-colors">শর্তাবলী</Link>
               <span className="flex items-center gap-1.5 px-3 py-1 bg-gray-800 rounded-full text-xs">
-                Made with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 animate-pulse" />
+                Developed by UpSkill Bangladesh 
               </span>
             </div>
           </div>

@@ -13,7 +13,6 @@ export default function Home() {
       
       <UpazilaCards />
       
-      {/* RecentProblems নিজেই data fetch করে */}
       <RecentProblems />
       
       <CTASection />

@@ -59,16 +59,13 @@ export async function getProblems(options: {
     search
   } = options;
 
-  // পেজিনেশন হিসাব
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
-  // কুয়েরি তৈরি
   let query = supabase
     .from('problems')
     .select('*', { count: 'exact' });
 
-  // ফিল্টার যোগ করা
   if (category && category !== 'all') {
     query = query.eq('category', category);
   }
@@ -81,12 +78,10 @@ export async function getProblems(options: {
     query = query.eq('upazila', upazila);
   }
 
-  // সার্চ
   if (search && search.trim() !== '') {
     query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
   }
 
-  // সর্টিং এবং পেজিনেশন
   const { data, error, count } = await query
     .order('created_at', { ascending: false })
     .range(from, to);
@@ -125,7 +120,6 @@ export async function incrementViewCount(id: number) {
   const supabase = createClient();
   
   try {
-    // First, get current view count
     const { data: problem } = await supabase
       .from('problems')
       .select('views_count')
@@ -133,7 +127,6 @@ export async function incrementViewCount(id: number) {
       .single();
 
     if (problem) {
-      // Increment the count
       await supabase
         .from('problems')
         .update({ views_count: (problem.views_count || 0) + 1 })
@@ -174,24 +167,20 @@ export async function uploadImage(file: File) {
 export async function getStats() {
   const supabase = createClient();
   
-  // মোট সমস্যা
   const { count: totalProblems } = await supabase
     .from('problems')
     .select('*', { count: 'exact', head: true });
 
-  // সমাধান হয়েছে
   const { count: resolvedProblems } = await supabase
     .from('problems')
     .select('*', { count: 'exact', head: true })
     .eq('status', 'resolved');
 
-  // চলমান
   const { count: inProgressProblems } = await supabase
     .from('problems')
     .select('*', { count: 'exact', head: true })
     .eq('status', 'in_progress');
 
-  // অপেক্ষমান
   const { count: pendingProblems } = await supabase
     .from('problems')
     .select('*', { count: 'exact', head: true })
@@ -264,17 +253,14 @@ export async function getAllProblemsForAdmin(options: {
     .from('problems')
     .select('*', { count: 'exact' });
 
-  // Apply status filter
   if (status && status !== '') {
     query = query.eq('status', status);
   }
 
-  // Apply search filter
   if (search && search.trim() !== '') {
     query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%,submitter_name.ilike.%${search}%`);
   }
 
-  // Order and paginate
   const { data, error, count } = await query
     .order('created_at', { ascending: false })
     .range(from, to);
@@ -398,8 +384,6 @@ export async function updateUnions(unions: Record<string, SettingsOption[]>): Pr
 
   return true;
 }
-
-// lib/api.ts - Add these functions
 
 // ==================== SITE SETTINGS ====================
 
@@ -559,4 +543,85 @@ export async function uploadSiteAsset(file: File, folder: 'logos' | 'photos' | '
     .getPublicUrl(fileName);
 
   return publicUrlData.publicUrl;
+}
+
+// ==========================================
+// Upazila Statistics (NEW)
+// ==========================================
+
+export interface UpazilaStats {
+  name: string;
+  slug: string;
+  unions_count: number;
+  problems_count: number;
+  solved_count: number;
+}
+
+// ==========================================
+// Upazila Statistics (FIXED)
+// ==========================================
+
+export interface UpazilaStats {
+  name: string;
+  slug: string;
+  unions_count: number;
+  problems_count: number;
+  solved_count: number;
+}
+
+export async function getUpazilaStats(): Promise<UpazilaStats[]> {
+  const supabase = createClient();
+  
+  // Upazila config - Bengali name, English key for unions, and slug
+  const upazilaConfig = [
+    { name: 'কোম্পানীগঞ্জ', unionKey: 'companiganj', slug: 'companiganj' },
+    { name: 'গোয়াইনঘাট', unionKey: 'gowainghat', slug: 'gowainghat' },
+    { name: 'জৈন্তাপুর', unionKey: 'jaintapur', slug: 'jaintapur' },
+  ];
+
+  try {
+    // Get unions settings
+    const { data: unionsSettings } = await supabase
+      .from('app_settings')
+      .select('setting_value')
+      .eq('setting_key', 'unions')
+      .single();
+
+    const unionsData = (unionsSettings?.setting_value || {}) as Record<string, Array<{ label: string; value: string }>>;
+
+    // Get all problems
+    const { data: problems } = await supabase
+      .from('problems')
+      .select('upazila, status');
+
+    const stats: UpazilaStats[] = upazilaConfig.map((upazila) => {
+      // Filter problems for this upazila (using Bengali name)
+      const upazilaProblems = problems?.filter((p) => p.upazila === upazila.name) || [];
+      const problemsCount = upazilaProblems.length;
+      const solvedCount = upazilaProblems.filter((p) => p.status === 'resolved').length;
+      
+      // Get unions count using English key
+      const upazilaUnions = unionsData[upazila.unionKey];
+      const unionsCount = Array.isArray(upazilaUnions) ? upazilaUnions.length : 0;
+
+      return {
+        name: upazila.name,
+        slug: upazila.slug,
+        unions_count: unionsCount,
+        problems_count: problemsCount,
+        solved_count: solvedCount,
+      };
+    });
+
+    return stats;
+  } catch (error) {
+    console.error('Error fetching upazila stats:', error);
+    return upazilaConfig.map((u) => ({
+      name: u.name,
+      slug: u.slug,
+      unions_count: 0,
+      problems_count: 0,
+      solved_count: 0,
+    }));
+  }
 }
