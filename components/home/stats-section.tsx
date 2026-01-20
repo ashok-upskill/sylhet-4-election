@@ -57,7 +57,7 @@ export async function StatsSection() {
     },
     {
       label: 'ইউনিয়ন সক্রিয়',
-      value: stats.activeUnions || 23,
+      value: (stats as any).activeUnions || 23,
       icon: MapPin,
       gradient: 'from-blue-400 to-blue-600',
       footer: {

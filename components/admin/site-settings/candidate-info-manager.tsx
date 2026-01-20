@@ -25,6 +25,7 @@ export function CandidateInfoManager() {
     vision: '',
     education: '',
     experience: '',
+    quote: '',
   });
 
   useEffect(() => {

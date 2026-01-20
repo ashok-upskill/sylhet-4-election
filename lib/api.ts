@@ -407,17 +407,7 @@ export interface CandidateInfo {
   vision: string;
   education: string;
   experience: string;
-  export interface CandidateInfo {
-  name: string;
-  name_english: string;
-  photo_url: string;
-  designation: string;
-  symbol: string;
-  bio: string;
-  vision: string;
-  education: string;
-  experience: string;
-  quote: string; // Candidate's quote
+  quote: string;
 }
 
 export interface SocialLinks {
@@ -557,19 +547,7 @@ export async function uploadSiteAsset(file: File, folder: 'logos' | 'photos' | '
 }
 
 // ==========================================
-// Upazila Statistics (NEW)
-// ==========================================
-
-export interface UpazilaStats {
-  name: string;
-  slug: string;
-  unions_count: number;
-  problems_count: number;
-  solved_count: number;
-}
-
-// ==========================================
-// Upazila Statistics (FIXED)
+// Upazila Statistics
 // ==========================================
 
 export interface UpazilaStats {
@@ -583,7 +561,6 @@ export interface UpazilaStats {
 export async function getUpazilaStats(): Promise<UpazilaStats[]> {
   const supabase = createClient();
   
-  // Upazila config - Bengali name, English key for unions, and slug
   const upazilaConfig = [
     { name: 'কোম্পানীগঞ্জ', unionKey: 'companiganj', slug: 'companiganj' },
     { name: 'গোয়াইনঘাট', unionKey: 'gowainghat', slug: 'gowainghat' },
@@ -591,7 +568,6 @@ export async function getUpazilaStats(): Promise<UpazilaStats[]> {
   ];
 
   try {
-    // Get unions settings
     const { data: unionsSettings } = await supabase
       .from('app_settings')
       .select('setting_value')
@@ -600,18 +576,15 @@ export async function getUpazilaStats(): Promise<UpazilaStats[]> {
 
     const unionsData = (unionsSettings?.setting_value || {}) as Record<string, Array<{ label: string; value: string }>>;
 
-    // Get all problems
     const { data: problems } = await supabase
       .from('problems')
       .select('upazila, status');
 
     const stats: UpazilaStats[] = upazilaConfig.map((upazila) => {
-      // Filter problems for this upazila (using Bengali name)
       const upazilaProblems = problems?.filter((p) => p.upazila === upazila.name) || [];
       const problemsCount = upazilaProblems.length;
       const solvedCount = upazilaProblems.filter((p) => p.status === 'resolved').length;
       
-      // Get unions count using English key
       const upazilaUnions = unionsData[upazila.unionKey];
       const unionsCount = Array.isArray(upazilaUnions) ? upazilaUnions.length : 0;
 
