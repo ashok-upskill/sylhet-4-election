@@ -407,6 +407,7 @@ export interface CandidateInfo {
   vision: string;
   education: string;
   experience: string;
+  quote: string;
 }
 
 export interface SocialLinks {
