@@ -407,7 +407,17 @@ export interface CandidateInfo {
   vision: string;
   education: string;
   experience: string;
-  quote: string;
+  export interface CandidateInfo {
+  name: string;
+  name_english: string;
+  photo_url: string;
+  designation: string;
+  symbol: string;
+  bio: string;
+  vision: string;
+  education: string;
+  experience: string;
+  quote: string; // Candidate's quote
 }
 
 export interface SocialLinks {
