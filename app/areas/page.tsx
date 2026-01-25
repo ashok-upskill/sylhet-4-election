@@ -23,7 +23,7 @@ const upazilaData = {
     population: "২,৫১,৭৮৬",
     unions: 6,
     pourashava: 1,
-    famousPlaces: ["ভোলাগঞ্জ পাথর কোয়ারি", "সুরমা নদী", "পাথর ঘাট"],
+    famousPlaces: ["সাদা পাথর", "বিছানাকান্দি", "পাথর ঘাট"],
     unionList: [
       { id: "islampur_uttar", name: "ইসলামপুর উত্তর", villages: 12, schools: 5, markets: 2, population: 25000 },
       { id: "islampur_dakkhin", name: "ইসলামপুর দক্ষিণ", villages: 10, schools: 4, markets: 2, population: 22000 },
