@@ -18,13 +18,13 @@ const upazilaConfigs: Record<string, UpazilaConfig> = {
     slug: "companyganj",
     icon: <Mountain className="w-6 h-6" />,
     gradient: "bg-gradient-to-br from-primary to-primary-600",
-    famousPlace: "ভোলাগঞ্জ পাথর কোয়ারি",
+    famousPlace: "বিছানাকান্দি",
   },
   "গোয়াইনঘাট": {
     slug: "gowainghat",
     icon: <Trees className="w-6 h-6" />,
     gradient: "bg-gradient-to-br from-accent to-accent-600",
-    famousPlace: "জাফলং, রাতারগুল",
+    famousPlace: "রাতারগুল",
   },
   "জৈন্তাপুর": {
     slug: "jaintapur",
